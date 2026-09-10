@@ -24,7 +24,7 @@ const getAllTours = async (req, res) => {
     );
     //Execute Query
     const query = Tour.find(JSON.parse(querystr));
-    const tours = await query();
+    const tours = await query;
     res
       .status(200)
       .json({ stats: 'success', results: tours.length, data: { tours } });
