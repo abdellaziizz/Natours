@@ -22,9 +22,32 @@ const getAllTours = async (req, res) => {
       /\b(gte|gt|lt|lte)\b/g,
       (match) => `$${match}`,
     );
+
+    //Sorting
+    let query = Tour.find(JSON.parse(querystr));
+    if (req.query.sort) {
+      const sortBy = req.query.sort.split(',').join(' '); //To add more than value to sort with
+      query = query.sort(req.query.sort);
+    } else {
+      query = query.sort('-createdAt'); // Default sorting with createdAt
+    }
+    //Limiting Fields
+    if (req.query.fields) {
+      const fields = req.query.fields.split(',').join(' ');
+      query = query.select(fields);
+    } else {
+      query = query.select('-_v');
+    }
+    //Pagination
+    //page=2 & limit = 10
+    const page = Number(req.query.page);
+    const limit = Number(req.query.limit);
+    const skipValue = (page - 1) * limit;
+
+    query.skip(skip).limit(limit);
     //Execute Query
-    const query = Tour.find(JSON.parse(querystr));
     const tours = await query;
+
     res
       .status(200)
       .json({ stats: 'success', results: tours.length, data: { tours } });
