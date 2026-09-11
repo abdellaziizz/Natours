@@ -40,11 +40,13 @@ const getAllTours = async (req, res) => {
     }
     //Pagination
     //page=2 & limit = 10
-    const page = Number(req.query.page);
-    const limit = Number(req.query.limit);
-    const skipValue = (page - 1) * limit;
+    if (req.query.page) {
+      const page = Number(req.query.page) || 1;
+      const limit = Number(req.query.limit) || 1;
+      const skipValue = (page - 1) * limit;
 
-    query.skip(skip).limit(limit);
+      query.skip(skipValue).limit(limit);
+    }
     //Execute Query
     const tours = await query;
 
