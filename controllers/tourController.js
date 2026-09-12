@@ -9,6 +9,12 @@ const postTour = async (req, res) => {
     res.status(400).json({ stats: 'fail', data: { message: err.message } });
   }
 };
+//middleware
+const aliasTopTours = (req, res, next) => {
+  req.query.limit = '5';
+  req.query.sort = '-ratingAverage,price';
+  req.query.fields = 'name,price,ratingAverage,summary';
+};
 const getAllTours = async (req, res) => {
   try {
     const queryObject = { ...req.query }; //DESTRUCTUREING
@@ -44,8 +50,9 @@ const getAllTours = async (req, res) => {
       const page = Number(req.query.page) || 1;
       const limit = Number(req.query.limit) || 1;
       const skipValue = (page - 1) * limit;
-
+      const numTours = await Tour.countDocuments();
       query.skip(skipValue).limit(limit);
+      if (skipValue >= numTours) throw new Error('The Page Does not Exist');
     }
     //Execute Query
     const tours = await query;
@@ -86,4 +93,11 @@ const deleteTour = async (req, res) => {
     res.status(400).json({ stats: 'fail', message: err.message });
   }
 };
-export default { getAllTours, postTour, getTourById, deleteTour, updateTour };
+export default {
+  getAllTours,
+  postTour,
+  getTourById,
+  deleteTour,
+  updateTour,
+  aliasTopTours,
+};
