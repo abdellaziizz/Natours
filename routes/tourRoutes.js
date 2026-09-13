@@ -11,3 +11,4 @@ route
 router.route('/:id').get(Tours.getTourById).delete(Tours.deleteTour);
 export default router;
 router.route('/tours-stats').get(tourController.getToursStats);
+router.route('/monthly-plan/:year').get(tourController.getMonthlyPlan);
