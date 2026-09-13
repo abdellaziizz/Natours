@@ -59,6 +59,29 @@ const postTour = async (req, res) => {
     res.status(400).json({ stats: 'fail', data: { message: err.message } });
   }
 };
+const getToursStats = async (req, res) => {
+  try {
+    const stats = await Tour.aggregate([
+      { $match: { ratingAverage: { $gte: 4.5 } } },
+      {
+        $group: {
+          _id: { toUpper: '$difficulty' },
+          numRatings: { $sum: '$strtingRatingQuantity' },
+          numTours: { $sum: 1 },
+          avgrating: { $avg: '$ratingAverage' },
+          minPrice: { $min: '$price' },
+          maxPrice: { $max: '$price' },
+
+          avgPrice: { $avg: '$price' },
+        },
+      },
+      { $sort: { avgPrice: 1 } },
+    ]);
+    res.status(200).json({ stats: 'success', data: { stats } });
+  } catch (err) {
+    res.status(400).json({ stats: 'fail', data: { message: err.message } });
+  }
+};
 export default {
   getAllTours,
   postTour,
@@ -66,4 +89,5 @@ export default {
   deleteTour,
   updateTour,
   aliasTopTours,
+  getToursStats,
 };

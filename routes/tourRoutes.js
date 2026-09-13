@@ -10,3 +10,4 @@ route
   .get(tourController.aliasTopTours, tourController.getAllTours);
 router.route('/:id').get(Tours.getTourById).delete(Tours.deleteTour);
 export default router;
+router.route('/tours-stats').get(tourController.getToursStats);
