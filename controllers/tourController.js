@@ -1,6 +1,7 @@
 import Tour from '../models/tourModels.js';
 import APIFeatures from '../utils/APIFeature.js';
 import catchAsync from '../utils/catchAsync.js';
+import AppError from '../appError.js';
 //middleware
 const aliasTopTours = (req, res, next) => {
   req.query.limit = '5';
@@ -22,6 +23,9 @@ const getAllTours = catchAsync(async (req, res, next) => {
 
 const getTourById = catchAsync(async (req, res, next) => {
   const tour = await Tour.findById(req.params.id);
+  if (!tour) {
+    return new AppError('No tour with that id ', 404);
+  }
   res.status(200).json({ stats: 'success', data: { tour } });
 });
 const updateTour = catchAsync(async (req, res, next) => {
