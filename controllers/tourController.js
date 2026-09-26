@@ -1,7 +1,7 @@
 import Tour from '../models/tourModels.js';
 import APIFeatures from '../utils/APIFeature.js';
 import catchAsync from '../utils/catchAsync.js';
-import AppError from '../appError.js';
+import AppError from './../utils/appError.js';
 //middleware
 const aliasTopTours = (req, res, next) => {
   req.query.limit = '5';
