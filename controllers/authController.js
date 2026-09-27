@@ -2,6 +2,7 @@ import catchAsync from './../utils/catchAsync.js';
 import User from './../models/userModels.js';
 import jwt from 'jsonwebtoken';
 import AppError from './../utils/appError.js';
+import util from 'util';
 const signUp = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
     name: req.body.name,
@@ -32,4 +33,25 @@ const logIn = catchAsync(async (req, res, next) => {
   });
   res.status(200).json({ status: 'success', token });
 });
-export default { signUp, logIn };
+const protect = catchAsync(async (req, res, next) => {
+  let token;
+
+  // 1.Get the token and do some checking:
+  if (
+    req.header.authorization &&
+    req.header.authorization.startsWith('Bearer')
+  ) {
+    token = req.header.authorization.split(' ')[1];
+  }
+  if (!token) {
+    next(new AppError('You are not logged in to get access !', 401));
+  }
+  // 2.Verify if the token is valid or not "this is called verification"
+  const verify = await util.promisify(jwt.verify)(
+    token,
+    process.env.JWT_SECRET,
+  );
+  // 3.Check if the user that tries to get access is still exist or not
+  // 4.Check if the user changed the password after the token was issued
+});
+export default { signUp, logIn, protect };

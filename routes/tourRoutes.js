@@ -1,9 +1,13 @@
 import express from 'express';
 import Tours from '../controllers/tourController.js';
 import tourController from '../controllers/tourController.js';
+import authController from './../controllers/authController.js';
 const router = express.Router();
 
-router.route('/').get(Tours.getAllTours).post(Tours.postTour);
+router
+  .route('/')
+  .get(authController.protect, Tours.getAllTours)
+  .post(Tours.postTour);
 router
   .route('/top-five-cheap')
   .get(tourController.aliasTopTours, tourController.getAllTours);

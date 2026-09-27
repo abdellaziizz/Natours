@@ -1,3 +1,4 @@
+import { JsonWebTokenError } from 'jsonwebtoken';
 import AppError from '../utils/appError.js';
 const handleValidationErrorDB = (err) => {
   const errors = Object.values(err).map((el) => {
@@ -5,6 +6,9 @@ const handleValidationErrorDB = (err) => {
   });
   const message = `$Invalid input data. ${errors.join('. ')}`;
   return new AppError(message, 400);
+};
+const handleJWTError = (err) => {
+  return new AppError('Invalid token , please login again', 401);
 };
 const handleCastErrorDB = (err) => {
   const message = `$Invalid ${err.path}:${err._id}`;
@@ -44,6 +48,9 @@ export default (err, req, res, next) => {
     }
     if (error.name === 'ValidationError') {
       error = handleValidationErrorDB(error);
+    }
+    if (error.name === 'JsonWebTokenError') {
+      error = handleJWTError(error);
     }
     sendErrorToProduction(error);
   }
