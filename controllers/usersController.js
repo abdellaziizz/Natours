@@ -1,10 +1,18 @@
-import express from 'express';
 import fs from 'fs';
-const getAllUsers = (req, res) => {
+import express from 'express';
+import catchAsync from './../utils/catchAsync.js';
+import APIFeatures from '../utils/APIFeature.js';
+import User from '../models/userModels.js';
+
+const getAllUsers = catchAsync(async (req, res, next) => {
+  //Execute Query
+
+  const users = await User.find();
+
   res
-    .status(500)
-    .json({ status: 'error', message: 'this route is not handled yet' });
-};
+    .status(200)
+    .json({ stats: 'success', results: users.length, data: { users } });
+});
 const postUsers = (req, res) => {
   res
     .status(500)
