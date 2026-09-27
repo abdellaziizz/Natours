@@ -52,6 +52,14 @@ const protect = catchAsync(async (req, res, next) => {
     process.env.JWT_SECRET,
   );
   // 3.Check if the user that tries to get access is still exist or not
-  // 4.Check if the user changed the password after the token was issued
+  const freshUser = await User.findById(verify.id);
+  if (!freshUser) {
+    return next(
+      new AppError('The user of this tokens does no longer exist !', 401),
+    );
+  }
+  //after all of this success, go to the route handler
+  req.user = freshUser;
+  next();
 });
 export default { signUp, logIn, protect };

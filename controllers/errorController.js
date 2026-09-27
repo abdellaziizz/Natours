@@ -1,4 +1,4 @@
-import { JsonWebTokenError } from 'jsonwebtoken';
+import { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
 import AppError from '../utils/appError.js';
 const handleValidationErrorDB = (err) => {
   const errors = Object.values(err).map((el) => {
@@ -7,8 +7,11 @@ const handleValidationErrorDB = (err) => {
   const message = `$Invalid input data. ${errors.join('. ')}`;
   return new AppError(message, 400);
 };
-const handleJWTError = (err) => {
+const handleJWTError = () => {
   return new AppError('Invalid token , please login again', 401);
+};
+const handleExpiredToken = () => {
+  return new AppError('Expired token , please login again', 401);
 };
 const handleCastErrorDB = (err) => {
   const message = `$Invalid ${err.path}:${err._id}`;
@@ -50,7 +53,10 @@ export default (err, req, res, next) => {
       error = handleValidationErrorDB(error);
     }
     if (error.name === 'JsonWebTokenError') {
-      error = handleJWTError(error);
+      error = handleJWTError();
+    }
+    if (error.name === 'TokenExpiredError') {
+      error = handleExpiredToken();
     }
     sendErrorToProduction(error);
   }
