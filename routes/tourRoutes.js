@@ -13,6 +13,15 @@ router
   .get(tourController.aliasTopTours, tourController.getAllTours);
 router.route('/tours-stats').get(tourController.getToursStats);
 router.route('/monthly-plan/:year').get(tourController.getMonthlyPlan);
-router.route('/:id').get(Tours.getTourById).delete(Tours.deleteTour);
+router
+  .route('/:id')
+  .get(Tours.getTourById)
+  .delete(
+    authController.protect,
+    authController.authorize('admin', 'lead-guide'),
+    Tours.deleteTour,
+  );
+router.route('/forgotpassword', authController.forgotPassword);
+router.route('/resetpassword', authController.resetPassword);
 
 export default router;

@@ -62,4 +62,31 @@ const protect = catchAsync(async (req, res, next) => {
   req.user = freshUser;
   next();
 });
-export default { signUp, logIn, protect };
+const authorize = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.include(req.user.role)) {
+      return next(
+        new AppError('You Do not have permission for these resources', 403),
+      );
+    }
+    next();
+  };
+};
+const forgotPassword = catchAsync(async (req, res, next) => {
+  //1.Get the user based on POSTed email
+  const user = await User.findOne({ email: req.body.email });
+  if (!user) {
+    return next(new AppError('user does not exist !', 404));
+  }
+  //2.Generate the reset "random" token
+  //3.Send it to the user's email
+});
+const resetPassword = (req, res, next) => {};
+export default {
+  signUp,
+  logIn,
+  protect,
+  authorize,
+  forgotPassword,
+  resetPassword,
+};
