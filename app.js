@@ -4,11 +4,19 @@ import userRouter from './routes/userRoutes.js';
 import tourRouter from './routes/tourRoutes.js';
 import AppError from './utils/appError.js';
 import globalErrorController from './controllers/errorController.js';
-
+import rateLimit from 'express-rate-limit';
 const app = express();
+
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
+const limiter = rateLimit({
+  max: 100,
+  windowMs: 60 * 60 * 1000,
+  message: 'Too many requests from this IP',
+});
+//this will effect all the routes that start with /api, so we can use it for all the api routes
+app.use('/api', limiter);
 app.use(express.json());
 app.use(express.static(`public`));
 // mounting the routers

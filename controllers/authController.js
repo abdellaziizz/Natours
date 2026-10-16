@@ -101,6 +101,15 @@ const updatePassword = catchAsync(async (req, res, next) => {
 });
 const createSendToken = (user, statusCode, res) => {
   const token = signToken(user._id);
+  res.cookie('jwt', token, {
+    expires: new Date(
+      Date.now() + process.env.JWT_COOKIE_DURATION * 24 * 60 * 60 * 1000,
+    ),
+    secure: process.env.NODE_ENV === 'production' ? true : false,
+    httpOnly: true,
+  });
+  user.password = undefined;
+
   res.status(statusCode).json({ status: 'success', token, data: user });
 };
 export default {
