@@ -83,7 +83,6 @@ const forgotPassword = catchAsync(async (req, res, next) => {
   user.save({ validateBeforeSave: false });
   //3.Send it to the user's email
 });
-const resetPassword = (req, res, next) => {};
 const updatePassword = catchAsync(async (req, res, next) => {
   //1.Get the user from the collection
   const user = await User.findById(req.user.id).select('+password');
@@ -111,4 +110,5 @@ export default {
   authorize,
   forgotPassword,
   resetPassword,
+  updatePassword,
 };
