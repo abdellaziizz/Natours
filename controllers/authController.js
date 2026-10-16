@@ -79,9 +79,31 @@ const forgotPassword = catchAsync(async (req, res, next) => {
     return next(new AppError('user does not exist !', 404));
   }
   //2.Generate the reset "random" token
+  const resetToken = user.createPassResetToken();
+  user.save({ validateBeforeSave: false });
   //3.Send it to the user's email
 });
 const resetPassword = (req, res, next) => {};
+const updatePassword = catchAsync(async (req, res, next) => {
+  //1.Get the user from the collection
+  const user = await User.findById(req.user.id).select('+password');
+
+  // 2.check if the  POSTed current uesr password is correct
+  if (!(await user.correctPassword(req.body.passwordCurrent, user.password))) {
+    return new AppError('Your current password is wrong', 401);
+  }
+  // 3.update the password
+  user.password = req.body.password;
+  user.confirmPassword = req.body.confirmPassword;
+  await user.save();
+  // 4.log the user in , send JWT
+  const token = signToken(user._id);
+  res.status(200).json({ status: 'success', token });
+});
+const createSendToken = (user, statusCode, res) => {
+  const token = signToken(user._id);
+  res.status(statusCode).json({ status: 'success', token, data: user });
+};
 export default {
   signUp,
   logIn,

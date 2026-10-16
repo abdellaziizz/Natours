@@ -1,0 +1,9 @@
+import nodemailer from 'nodemailer';
+const sendEmail = (options) => {
+  //1.create a transporter
+  //   const transporter = nodemailer.createTransport({service:'Gmail'
+  //     auth: { user: process.env.EMAIL_USERNAME, pass: process.env.EMAIL_PASS },
+  //   });
+  //2.define the email options
+  //3.send the email using nodemailer
+};
