@@ -37,6 +37,7 @@ const userSchema = new mongoose.Schema({
     passwordResetToken: String,
     passwordResetExpireAt: Date,
   },
+  active: { type: Boolean, default: true, select: false },
 });
 userSchema.methods.correctPassword = async function (
   candidatePassword,
@@ -67,6 +68,12 @@ userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
   this.password = await bcrypt.hash(this.password, 12);
   this.confirmPassword = undefined;
+});
+//this is for any query that start with find like findOne, findById, findByIdAndUpdate, findByIdAndDelete
+//this pre middleware will run in order to filter the data and return only active users
+userSchema.pre(/^find/, function (next) {
+  this.find({ active: { $ne: false } });
+  next();
 });
 const User = mongoose.model('User', userSchema);
 export default User;

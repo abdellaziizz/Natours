@@ -61,6 +61,10 @@ const getUsersById = (req, res) => {
     .status(500)
     .json({ status: 'error', message: 'this route is not handled yet' });
 };
+const deleteMe = catchAsync(async (req, res, next) => {
+  await User.findByIdAndUpdate(req.user.id, { active: false });
+  res.status(204).json({ status: 'success', data: null });
+});
 export default {
   getAllUsers,
   postUsers,
@@ -68,4 +72,5 @@ export default {
   deleteUser,
   getUsersById,
   updateMe,
+  deleteMe,
 };
