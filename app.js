@@ -5,7 +5,11 @@ import tourRouter from './routes/tourRoutes.js';
 import AppError from './utils/appError.js';
 import globalErrorController from './controllers/errorController.js';
 import rateLimit from 'express-rate-limit';
+import helmet from 'helmet';
+import xss from 'xss-clean';
+import mongoSanitize from 'express-mongo-sanitize';
 const app = express();
+app.use(helmet());
 
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
@@ -17,7 +21,9 @@ const limiter = rateLimit({
 });
 //this will effect all the routes that start with /api, so we can use it for all the api routes
 app.use('/api', limiter);
-app.use(express.json());
+app.use(express.json({ limit: '10kb' }));
+app.use(mongoSanitize());
+app.use(xss());
 app.use(express.static(`public`));
 // mounting the routers
 app.use('/api/v1/tours', tourRouter);
