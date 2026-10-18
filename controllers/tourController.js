@@ -29,14 +29,14 @@ const getTourById = catchAsync(async (req, res, next) => {
   if (!tour) {
     return new AppError('No tour with that id ', 404);
   }
-  res.status(200).json({ stats: 'success', data: { tour } });
+  res.status(200).json({ status: 'success', data: { tour } });
 });
 const updateTour = catchAsync(async (req, res, next) => {
   const updatedTour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
     runValidators: true,
   });
-  res.status(200).json({ stats: 'success', data: { tour: updatedTour } });
+  res.status(200).json({ status: 'success', data: { tour: updatedTour } });
 });
 
 const deleteTour = catchAsync(async (req, res, next) => {
@@ -46,7 +46,7 @@ const deleteTour = catchAsync(async (req, res, next) => {
 
 const postTour = catchAsync(async (req, res, next) => {
   const newTour = await Tour.create(req.body);
-  res.status(200).json({ stats: 'success', data: { newTour } });
+  res.status(200).json({ status: 'success', data: { newTour } });
 });
 const getToursStats = catchAsync(async (req, res, next) => {
   const stats = await Tour.aggregate([
@@ -65,7 +65,7 @@ const getToursStats = catchAsync(async (req, res, next) => {
     },
     { $sort: { avgPrice: 1 } },
   ]);
-  res.status(200).json({ stats: 'success', data: { stats } });
+  res.status(200).json({ status: 'success', data: { stats } });
 });
 const getMonthlyPlan = catchAsync(async (req, res, next) => {
   const year = Number(req.params.year);
@@ -90,7 +90,7 @@ const getMonthlyPlan = catchAsync(async (req, res, next) => {
       $project: { _id: 0 },
     },
   ]);
-  res.status(200).json({ stats: 'success', data: { plan } });
+  res.status(200).json({ status: 'success', data: { plan } });
 });
 export default {
   getAllTours,

@@ -9,6 +9,8 @@ import xss from 'xss-clean';
 import mongoSanitize from 'express-mongo-sanitize';
 import hpp from 'hpp';
 import env from 'dotenv';
+import reviewRouter from './routes/reviewRoutes.js';
+
 env.config({ path: './config.env' });
 const app = express();
 app.use(helmet());
@@ -42,6 +44,7 @@ app.use(express.static(`public`));
 // mounting the routers
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/reviews', reviewRouter);
 app.all('/*splat', (req, res, next) => {
   // const err = new Error();
   // err.status = 'fail';
