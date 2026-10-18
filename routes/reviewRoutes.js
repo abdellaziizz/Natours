@@ -1,7 +1,7 @@
 import express from 'express';
 import Reviews from '../controllers/reviewController.js';
 import authController from './../controllers/authController.js';
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 router
   .route('/')
   .get(Reviews.getAllReviews)
@@ -23,4 +23,5 @@ router
     authController.restrictTo('user', 'admin'),
     Reviews.deleteReview,
   );
+
 export default router;

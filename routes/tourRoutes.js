@@ -2,8 +2,9 @@ import express from 'express';
 import Tours from '../controllers/tourController.js';
 import tourController from '../controllers/tourController.js';
 import authController from './../controllers/authController.js';
+import reviewRouter from './..//routes/reviewRoutes.js';
 const router = express.Router();
-
+router.use('/:tourId/reviews', reviewRouter);
 router
   .route('/')
   .get(authController.protect, Tours.getAllTours)
@@ -23,5 +24,10 @@ router
   );
 router.route('/forgotpassword', authController.forgotPassword);
 router.route('/resetpassword', authController.resetPassword);
-
+// router
+//   .route('/:tourId/reviews')
+//   .post(
+//     authController.protect,
+//     authController.restrictTo('user').reviewController.createReview,
+//   );
 export default router;

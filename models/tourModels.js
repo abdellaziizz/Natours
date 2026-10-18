@@ -55,6 +55,12 @@ const tourSchema = new mongoose.Schema(
 tourSchema.virtual('durationOnWeeks').get(function () {
   return this.duration / 7;
 });
+//reviews is the name of virtual field. foreignField is the name of the field in the review model that references the tour model. localField is the name of the field in the tour model that is being referenced by the foreignField in the review model.
+tourSchema.virtual('reviews', {
+  ref: 'Review',
+  foreignField: 'tour',
+  localField: '_id',
+});
 // tourSchema.pre('save', async function (next) {
 //   const guidesPromise = this.guides.map(async (id) => {
 //     await User.findById(id);
