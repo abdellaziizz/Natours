@@ -27,6 +27,23 @@ const tourSchema = new mongoose.Schema(
       trim: true,
       required: [true, 'Tour must have a Summary'],
     },
+    startLocation: {
+      type: { type: String, default: 'Point' },
+      coordinates: [Number], //array of numbers is the longitued and latitude
+      enum: ['Point'],
+      address: String,
+      description: String,
+    },
+    locations: [
+      {
+        type: { type: String, default: 'Point', enum: ['Point'] },
+        address: String,
+        description: String,
+        coordinates: [Number],
+        day: Number,
+      },
+    ],
+    guides: [{ type: mongoose.Schema.ObjectId, ref: 'User' }],
     description: { type: String, trim: true },
     imageCover: { type: String, required: [true, 'a tour must have image'] },
     images: [String],
@@ -38,5 +55,13 @@ const tourSchema = new mongoose.Schema(
 tourSchema.virtual('durationOnWeeks').get(function () {
   return this.duration / 7;
 });
+// tourSchema.pre('save', async function (next) {
+//   const guidesPromise = this.guides.map(async (id) => {
+//     await User.findById(id);
+//   });
+//   this.guides = await Promise.all(guidesPromise);
+
+//   next();
+// });
 const Tour = mongoose.model('Tour', tourSchema);
 export default Tour;

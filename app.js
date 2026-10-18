@@ -3,7 +3,6 @@ import morgan from 'morgan';
 import userRouter from './routes/userRoutes.js';
 import tourRouter from './routes/tourRoutes.js';
 import AppError from './utils/appError.js';
-import globalErrorController from './controllers/errorController.js';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import xss from 'xss-clean';

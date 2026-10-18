@@ -4,9 +4,7 @@ import fs from 'fs';
 import dotenv from 'dotenv';
 dotenv.config({ path: 'config.env' });
 const DB = process.env.DATABASE;
-const tour = JSON.parse(
-  fs.readFileSync(`dev-data/data/tours-simple.json`, 'utf-8'),
-);
+const tour = JSON.parse(fs.readFileSync(`dev-data/data/tours.json`, 'utf-8'));
 const importTours = async () => {
   try {
     await Tour.create(tour);
