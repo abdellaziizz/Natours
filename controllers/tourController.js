@@ -2,6 +2,7 @@ import Tour from '../models/tourModels.js';
 import APIFeatures from '../utils/APIFeature.js';
 import catchAsync from '../utils/catchAsync.js';
 import AppError from './../utils/appError.js';
+import factory from './handlerFactory.js';
 //middleware
 const aliasTopTours = (req, res, next) => {
   req.query.limit = '5';
@@ -31,18 +32,13 @@ const getTourById = catchAsync(async (req, res, next) => {
   }
   res.status(200).json({ status: 'success', data: { tour } });
 });
-const updateTour = catchAsync(async (req, res, next) => {
-  const updatedTour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
-  });
-  res.status(200).json({ status: 'success', data: { tour: updatedTour } });
-});
+const updateTour = factory.updateOne(Tour);
 
-const deleteTour = catchAsync(async (req, res, next) => {
-  await Tour.findByIdAndDelete(req.params.id);
-  res.status(204).json({ status: 'success', data: null });
-});
+const deleteTour = factory.deleteOne(Tour);
+//  catchAsync(async (req, res, next) => {
+//   await Tour.findByIdAndDelete(req.params.id);
+//   res.status(204).json({ status: 'success', data: null });
+// });
 
 const postTour = catchAsync(async (req, res, next) => {
   const newTour = await Tour.create(req.body);

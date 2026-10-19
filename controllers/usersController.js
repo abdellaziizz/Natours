@@ -1,9 +1,9 @@
-import fs from 'fs';
-import express from 'express';
 import catchAsync from './../utils/catchAsync.js';
 import APIFeatures from '../utils/APIFeature.js';
 import User from '../models/userModels.js';
 import AppError from '../utils/appError.js';
+import factory from './handlerFactory.js';
+
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
   //object.keys return an array of object keys
@@ -51,11 +51,7 @@ const updateUser = (req, res) => {
     .status(500)
     .json({ status: 'error', message: 'this route is not handled yet' });
 };
-const deleteUser = (req, res) => {
-  res
-    .status(500)
-    .json({ status: 'error', message: 'this route is not handled yet' });
-};
+const deleteUser = factory.deleteOne(User);
 const getUsersById = (req, res) => {
   res
     .status(500)

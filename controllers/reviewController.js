@@ -2,7 +2,7 @@ import APIFeatures from '../utils/APIFeature.js';
 import catchAsync from '../utils/catchAsync.js';
 import AppError from './../utils/appError.js';
 import Review from '../models/reviewModels.js';
-
+import factory from './handlerFactory.js';
 const getAllReviews = catchAsync(async (req, res, next) => {
   let filter = {};
   if (req.params.tourId) filter = { tour: req.params.tourId };
@@ -28,7 +28,7 @@ const createReview = catchAsync(async (req, res, next) => {
   res.status(200).json({ status: 'success', data: { review: newReview } });
 });
 const updateReview = catchAsync(async (req, res, next) => {});
-const deleteReview = catchAsync(async (req, res, next) => {});
+const deleteReview = factory.deleteOne(Review);
 export default {
   createReview,
   getAllReviews,
