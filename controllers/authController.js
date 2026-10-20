@@ -118,6 +118,5 @@ export default {
   protect,
   authorize,
   forgotPassword,
-  resetPassword,
   updatePassword,
 };

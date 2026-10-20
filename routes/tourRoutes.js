@@ -10,14 +10,20 @@ router
   .get(Tours.getAllTours)
   .post(
     authController.protect,
-    authController.restrictTo('admin', 'lead-guide'),
+    authController.authorize('admin', 'lead-guide'),
     Tours.postTour,
   );
 router
   .route('/top-five-cheap')
   .get(tourController.aliasTopTours, tourController.getAllTours);
 router.route('/tours-stats').get(tourController.getToursStats);
-router.route('/monthly-plan/:year').get(tourController.getMonthlyPlan);
+router
+  .route('/monthly-plan/:year')
+  .get(
+    authController.protect,
+    authController.authorize('admin', 'lead-guide', 'guide'),
+    tourController.getMonthlyPlan,
+  );
 router
   .route('/:id')
   .get(Tours.getTourById)
@@ -25,13 +31,13 @@ router
     authController.protect,
     authController.authorize('admin', 'lead-guide'),
     Tours.deleteTour,
+  )
+  .patch(
+    authController.protect,
+    authController.authorize('admin', 'lead-guide'),
+    Tours.updateTour,
   );
 router.route('/forgotpassword', authController.forgotPassword);
 router.route('/resetpassword', authController.resetPassword);
-// router
-//   .route('/:tourId/reviews')
-//   .post(
-//     authController.protect,
-//     authController.restrictTo('user').reviewController.createReview,
-//   );
+
 export default router;

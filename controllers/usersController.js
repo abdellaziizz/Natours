@@ -64,4 +64,5 @@ export default {
   updateMe: createUser,
   deleteMe,
   getUserById,
+  getMe,
 };
