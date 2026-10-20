@@ -14,16 +14,12 @@ const filterObj = (obj, ...allowedFields) => {
   });
   return newObj;
 };
-const getAllUsers = catchAsync(async (req, res, next) => {
-  //Execute Query
-
-  const users = await User.find();
-
-  res
-    .status(200)
-    .json({ stats: 'success', results: users.length, data: { users } });
+const getAllUsers = factory.getAll(User);
+const getMe = catchAsync(async (req, res, next) => {
+  req.params.id = req.user.id;
+  next();
 });
-const updateMe = catchAsync(async (req, res, next) => {
+const createUser = catchAsync(async (req, res, next) => {
   //1.create error if the user try to POST password
   if (req.body.password || req.body.confirmPassword) {
     return next(
@@ -41,16 +37,14 @@ const updateMe = catchAsync(async (req, res, next) => {
   });
   res.status(200).json({ status: 'success', data: { user: updatedUser } });
 });
+const getUserById = factory.getOne(User);
 const postUsers = (req, res) => {
   res
     .status(500)
     .json({ status: 'error', message: 'this route is not handled yet' });
 };
-const updateUser = (req, res) => {
-  res
-    .status(500)
-    .json({ status: 'error', message: 'this route is not handled yet' });
-};
+// Don't update password with this
+const updateUser = factory.updateOne(User);
 const deleteUser = factory.deleteOne(User);
 const getUsersById = (req, res) => {
   res
@@ -67,6 +61,7 @@ export default {
   updateUser,
   deleteUser,
   getUsersById,
-  updateMe,
+  updateMe: createUser,
   deleteMe,
+  getUserById,
 };

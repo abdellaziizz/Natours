@@ -11,26 +11,10 @@ const aliasTopTours = (req, res, next) => {
   next();
 };
 
-const getAllTours = catchAsync(async (req, res, next) => {
-  //Execute Query
-  const feature = new APIFeatures(Tour.find(), req.query);
-  feature.filter().sorting().limitFields().paginate();
-  const tours = await feature.query();
+const getAllTours = factory.getAll(Tour);
 
-  res
-    .status(200)
-    .json({ stats: 'success', results: tours.length, data: { tours } });
-});
-
-const getTourById = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findById(req.params.id).populate({
-    path: 'guides',
-    select: '-__v-passwordChangedAt',
-  });
-  if (!tour) {
-    return new AppError('No tour with that id ', 404);
-  }
-  res.status(200).json({ status: 'success', data: { tour } });
+const getTourById = factory.getOne(Tour, {
+  path: 'guides',
 });
 const updateTour = factory.updateOne(Tour);
 
@@ -40,10 +24,7 @@ const deleteTour = factory.deleteOne(Tour);
 //   res.status(204).json({ status: 'success', data: null });
 // });
 
-const postTour = catchAsync(async (req, res, next) => {
-  const newTour = await Tour.create(req.body);
-  res.status(200).json({ status: 'success', data: { newTour } });
-});
+const postTour = factory.createOne(Tour);
 const getToursStats = catchAsync(async (req, res, next) => {
   const stats = await Tour.aggregate([
     { $match: { ratingAverage: { $gte: 4.5 } } },

@@ -7,8 +7,12 @@ const router = express.Router();
 router.use('/:tourId/reviews', reviewRouter);
 router
   .route('/')
-  .get(authController.protect, Tours.getAllTours)
-  .post(Tours.postTour);
+  .get(Tours.getAllTours)
+  .post(
+    authController.protect,
+    authController.restrictTo('admin', 'lead-guide'),
+    Tours.postTour,
+  );
 router
   .route('/top-five-cheap')
   .get(tourController.aliasTopTours, tourController.getAllTours);

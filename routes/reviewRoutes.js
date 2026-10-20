@@ -8,6 +8,7 @@ router
   .post(
     authController.protect,
     authController.restrictTo('user'),
+    Reviews.setTourUserIds,
     Reviews.createReview,
   );
 router
@@ -22,6 +23,7 @@ router
     authController.protect,
     authController.restrictTo('user', 'admin'),
     Reviews.deleteReview,
-  );
+  )
+  .get(Reviews.getReviewById);
 
 export default router;
