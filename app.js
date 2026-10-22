@@ -11,7 +11,7 @@ import env from 'dotenv';
 import reviewRouter from './routes/reviewRoutes.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
-
+import viewRouter from './routes/view.Routers.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 env.config({ path: './config.env' });
@@ -50,9 +50,8 @@ app.use(
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
-app.get('/', (req, res) => {
-  res.status(200).render('base');
-});
+app.use('/', viewRouter);
+
 app.all('/*splat', (req, res, next) => {
   next(new AppError('fail', 404));
 });
