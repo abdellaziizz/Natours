@@ -17,6 +17,10 @@ const tourSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    slug: {
+      type: String,
+      required: true,
+    },
     price: {
       type: Number,
       required: [true, 'Tour must have price'],
@@ -61,13 +65,14 @@ tourSchema.virtual('reviews', {
   foreignField: 'tour',
   localField: '_id',
 });
-// tourSchema.pre('save', async function (next) {
-//   const guidesPromise = this.guides.map(async (id) => {
-//     await User.findById(id);
-//   });
-//   this.guides = await Promise.all(guidesPromise);
 
-//   next();
-// });
+tourSchema.pre('validate', function () {
+  if (!this.slug) {
+    this.slug = slugify(this.name, {
+      lower: true,
+      strict: true,
+    });
+  }
+});
 const Tour = mongoose.model('Tour', tourSchema);
 export default Tour;

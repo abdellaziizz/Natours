@@ -2,7 +2,7 @@ import catchAsync from './../utils/catchAsync.js';
 import User from './../models/userModels.js';
 import jwt from 'jsonwebtoken';
 import AppError from './../utils/appError.js';
-import util from 'util';
+import util, { promisify } from 'util';
 const signUp = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
     name: req.body.name,
@@ -42,6 +42,8 @@ const protect = catchAsync(async (req, res, next) => {
     req.header.authorization.startsWith('Bearer')
   ) {
     token = req.header.authorization.split(' ')[1];
+  } else if (req.cookies.jwt) {
+    token = req.cookies.jwt;
   }
   if (!token) {
     next(new AppError('You are not logged in to get access !', 401));
@@ -112,6 +114,38 @@ const createSendToken = (user, statusCode, res) => {
 
   res.status(statusCode).json({ status: 'success', token, data: user });
 };
+//====only for rendered pages======
+const isLogedIn = async (req, res, next) => {
+  try {
+    //1.verify the token
+    if (req.cookies.jwt) {
+      token = req.cookies.jwt;
+      const verify = await util.promisify(jwt.verify)(
+        req.cookies.jwt,
+        process.env.JWT_SECRET,
+      );
+      const freshUser = await User.findById(verify.id);
+      // 3.Check if the user that tries to get access is still exist or not
+      if (!freshUser) {
+        return next();
+      }
+    }
+
+    //after all of this success, go to the route handler
+    res.locals.user = freshUser;
+    return next();
+  } catch (err) {
+    next();
+  }
+  next();
+};
+const logout = (req, res) => {
+  res.cookie('jwt', 'loggedout', {
+    expires: new Date(Date.now() + 10 * 1000),
+    httpOnly: true,
+  });
+  res.status(200).json({ status: 'success' });
+};
 export default {
   signUp,
   logIn,
@@ -119,4 +153,6 @@ export default {
   authorize,
   forgotPassword,
   updatePassword,
+  isLogedIn,
+  logout,
 };

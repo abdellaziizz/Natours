@@ -10,11 +10,16 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start:dev": "nodemon server.js",
     "start:prod": "NODE_ENV=production nodemon server.js",
-    "debug": "sudo ndb server.js"
+    "debug": "sudo ndb server.js",
+    "watch:js": "parcel watch ./public/js/index.js --out-dir ./public/js --out-file bundle.js",
+    "build:js": "parcel watch ./public/js/index.js --out-dir ./public/js --out-file bundle.js"
   },
   "dependencies": {
+    "@babel/polyfill": "^7.12.1",
     "@exortek/express-mongo-sanitize": "^3.0.1",
+    "axios": "^1.20.0",
     "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "express-rate-limit": "^8.7.1",
@@ -26,9 +31,11 @@
     "nodemailer": "^10.0.12",
     "nodemon": "^3.1.14",
     "pug": "^3.0.4",
+    "slugify": "^1.6.9",
     "validator": "^13.15.35"
   },
   "devDependencies": {
-    "ndb": "^1.1.5"
+    "ndb": "^1.1.5",
+    "parcel-bundler": "^1.12.5"
   }
 }

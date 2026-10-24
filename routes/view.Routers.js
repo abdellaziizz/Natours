@@ -1,7 +1,9 @@
 import express from 'express';
 import viewController from './../controllers/viewController.js';
+import authController from '../controllers/authController.js';
 const router = express.Router();
-
+router.use(authController.isLogedIn);
 router.get('/', viewController.getOverview);
-router.get('/tour', () => {});
+router.get('/tour/:slug', viewController.getTour);
+router.get('/login', viewController.getLoginForm);
 export default router;

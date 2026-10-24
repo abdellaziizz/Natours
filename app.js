@@ -12,6 +12,7 @@ import reviewRouter from './routes/reviewRoutes.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import viewRouter from './routes/view.Routers.js';
+import cookieParser from 'cookie-parser';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 env.config({ path: './config.env' });
@@ -33,6 +34,7 @@ const limiter = rateLimit({
 //this will effect all the routes that start with /api, so we can use it for all the api routes
 app.use('/api', limiter);
 app.use(express.json({ limit: '10kb' }));
+app.use(cookieParser());
 app.use(mongoSanitize());
 app.use(
   hpp({
