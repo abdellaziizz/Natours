@@ -62,6 +62,8 @@ const protect = catchAsync(async (req, res, next) => {
   }
   //after all of this success, go to the route handler
   req.user = freshUser;
+  res.locals.user = freshUser;
+
   next();
 });
 const authorize = (...roles) => {
@@ -155,4 +157,5 @@ export default {
   updatePassword,
   isLogedIn,
   logout,
+  verify,
 };
