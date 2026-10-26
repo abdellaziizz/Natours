@@ -3,7 +3,9 @@ import APIFeatures from '../utils/APIFeature.js';
 import User from '../models/userModels.js';
 import AppError from '../utils/appError.js';
 import factory from './handlerFactory.js';
-
+import multer from 'multer';
+const update = multer({ dest: 'public/img/users' });
+const upladUserPhoto = upload.single('photo');
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
   //object.keys return an array of object keys
