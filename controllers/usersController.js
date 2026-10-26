@@ -4,8 +4,28 @@ import User from '../models/userModels.js';
 import AppError from '../utils/appError.js';
 import factory from './handlerFactory.js';
 import multer from 'multer';
-const update = multer({ dest: 'public/img/users' });
-const upladUserPhoto = upload.single('photo');
+const multerStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'public/img/users');
+  },
+  filename: (req, file, cb) => {
+    const extension = file.mimetype.split('/')[1]; //image/jpeg
+    cb(null, `user-${req.user.id}-${Date.now()}.${extension}`);
+  },
+});
+const multerFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith('image')) {
+    cb(null, true);
+  } else {
+    cb(new AppError('Not an image', 400), false);
+  }
+};
+const update = multer({
+  storage: multerStorage,
+  fileFilter: multerFilter,
+});
+
+const upladUserPhoto = update.single('photo');
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
   //object.keys return an array of object keys
@@ -67,4 +87,5 @@ export default {
   deleteMe,
   getUserById,
   getMe,
+  upladUserPhoto,
 };
