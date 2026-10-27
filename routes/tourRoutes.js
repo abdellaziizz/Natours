@@ -1,5 +1,5 @@
 import express from 'express';
-import Tours from '../controllers/tourController.js';
+// import Tours from '../controllers/tourController.js';
 import tourController from '../controllers/tourController.js';
 import authController from './../controllers/authController.js';
 import reviewRouter from './..//routes/reviewRoutes.js';
@@ -7,11 +7,11 @@ const router = express.Router();
 router.use('/:tourId/reviews', reviewRouter);
 router
   .route('/')
-  .get(Tours.getAllTours)
+  .get(tourController.getAllTours)
   .post(
     authController.protect,
     authController.authorize('admin', 'lead-guide'),
-    Tours.postTour,
+    tourController.postTour,
   );
 router
   .route('/top-five-cheap')
@@ -26,16 +26,18 @@ router
   );
 router
   .route('/:id')
-  .get(Tours.getTourById)
+  .get(tourController.getTourById)
   .delete(
     authController.protect,
     authController.authorize('admin', 'lead-guide'),
-    Tours.deleteTour,
+    tourController.deleteTour,
   )
   .patch(
     authController.protect,
     authController.authorize('admin', 'lead-guide'),
-    Tours.updateTour,
+    tourController.uploadTourImage,
+    tourController.resizeTourImage,
+    tourController.updateTour,
   );
 router.route('/forgotpassword', authController.forgotPassword);
 router.route('/resetpassword', authController.resetPassword);

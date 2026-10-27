@@ -101,4 +101,5 @@ export default {
   getUserById,
   getMe,
   upladUserPhoto,
+  resizeUserPhoto,
 };

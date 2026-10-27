@@ -3,6 +3,27 @@ import APIFeatures from '../utils/APIFeature.js';
 import catchAsync from '../utils/catchAsync.js';
 import AppError from './../utils/appError.js';
 import factory from './handlerFactory.js';
+import multer from 'multer';
+import sharp from 'sharp';
+const multerStorage = multer.memoryStorage();
+const multerFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith('image')) {
+    cb(null, true);
+  } else {
+    cb(new AppError('Not an image', 400), false);
+  }
+};
+const update = multer({
+  storage: multerStorage,
+  fileFilter: multerFilter,
+});
+const uploadTourImage = update.fields([
+  { name: 'imageCover', maxCount: 1 },
+  { name: 'images', maxCount: 3 },
+]);
+const resizeTourImage = (req, res, next) => {
+  console.log(req.files);
+};
 //middleware
 const aliasTopTours = (req, res, next) => {
   req.query.limit = '5';
@@ -78,4 +99,6 @@ export default {
   aliasTopTours,
   getToursStats,
   getMonthlyPlan,
+  resizeTourImage,
+  uploadTourImage,
 };
