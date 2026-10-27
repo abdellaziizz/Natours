@@ -4,15 +4,17 @@ import User from '../models/userModels.js';
 import AppError from '../utils/appError.js';
 import factory from './handlerFactory.js';
 import multer from 'multer';
-const multerStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'public/img/users');
-  },
-  filename: (req, file, cb) => {
-    const extension = file.mimetype.split('/')[1]; //image/jpeg
-    cb(null, `user-${req.user.id}-${Date.now()}.${extension}`);
-  },
-});
+import sharp from 'sharp';
+// const multerStorage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, 'public/img/users');
+//   },
+//   filename: (req, file, cb) => {
+//     const extension = file.mimetype.split('/')[1]; //image/jpeg
+//     cb(null, `user-${req.user.id}-${Date.now()}.${extension}`);
+//   },
+// });
+const multerStorage = multer.memoryStorage();
 const multerFilter = (req, file, cb) => {
   if (file.mimetype.startsWith('image')) {
     cb(null, true);
@@ -26,6 +28,16 @@ const update = multer({
 });
 
 const upladUserPhoto = update.single('photo');
+const resizeUserPhoto = (req, res, next) => {
+  if (!req.file) return next();
+  req.file.filemame = `user-${req.user.id}-${Date.now()}.jpeg`;
+  sharp(req.file.buffer)
+    .resize(500, 500)
+    .toFormat('jpeg')
+    .jpeg({ quality: 90 })
+    .toFile(`public/img/users/${req.file.filename}`);
+  next();
+};
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
   //object.keys return an array of object keys
@@ -83,7 +95,8 @@ export default {
   updateUser,
   deleteUser,
   getUsersById,
-  updateMe: createUser,
+  updateMe,
+  createUser,
   deleteMe,
   getUserById,
   getMe,
